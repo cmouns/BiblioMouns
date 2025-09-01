@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Book index{% endblock %}
+
+{% block body %}
+    {% for favorite in favorites %}
+        <div class="card" style="width: 18rem;">
+            <img src="..." class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">{{ favorite.name }}</h5>
+                <p class="card-text">{{ favorite.synopsis }}</p>
+                <a href="#" class="btn btn-primary">En savoir plus</a>
+                <a href="{{ path('app_add_book_favorite', {id: favorite.id}) }}">
+                ❤️ Retirer des favoris
+                </a>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}

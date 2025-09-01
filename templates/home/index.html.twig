@@ -10,12 +10,13 @@
 <div class="container">
 {% for book in books %}
     <div class="card" style="width: 18rem;">
-    <img src="..." class="card-img-top" alt="...">
-    <div class="card-body">
-        <h5 class="card-title">{{ book.name }}</h5>
-        <p class="card-text">{{ book.synopsis }}</p>
-        <a href="#" class="btn btn-primary">En savoir plus</a>
-    </div>
+        <img src="..." class="card-img-top" alt="...">
+        <div class="card-body">
+            <h5 class="card-title">{{ book.name }}</h5>
+            <p class="card-text">{{ book.synopsis }}</p>
+<a href="{{ path('app_add_book_favorite', {id: book.id}) }}">            ❤️ Ajouter / Retirer des favoris
+            </a>
+        </div>
     </div>
         
     {% endfor %}
