@@ -13,9 +13,10 @@
         <img src="..." class="card-img-top" alt="...">
         <div class="card-body">
             <h5 class="card-title">{{ book.name }}</h5>
-            <p class="card-text">{{ book.synopsis }}</p>
-<a href="{{ path('app_add_book_favorite', {id: book.id}) }}">            ❤️ Ajouter / Retirer des favoris
+            <a href="{{ path('app_home_book_filter', {'id': book.id, 'slug': book.slug}) }}">
+                <p class="card-text">{{ book.synopsis }}</p>
             </a>
+            <a href="{{ path('app_add_book_favorite', {id: book.id}) }}">❤️ Ajouter / Retirer des favoris</a>
         </div>
     </div>
         

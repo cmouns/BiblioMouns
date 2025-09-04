@@ -24,7 +24,7 @@ class Category
     /**
      * @var Collection<int, SubCategory>
      */
-    #[ORM\OneToMany(targetEntity: SubCategory::class, mappedBy: 'category_id')]
+    #[ORM\OneToMany(targetEntity: SubCategory::class, mappedBy: 'category')]
     private Collection $subCategories;
 
     public function __construct()

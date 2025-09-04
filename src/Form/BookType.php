@@ -4,10 +4,12 @@ namespace App\Form;
 
 use App\Entity\Book;
 use App\Entity\SubCategory;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 class BookType extends AbstractType
 {
@@ -28,6 +30,25 @@ class BookType extends AbstractType
                 'class' => SubCategory::class,
                 'choice_label' => 'name',
                 'multiple' => true,
+            ])
+            ->add('image', FileType::class, [
+                'label' => 'Image du produit',
+                'mapped' => false,
+                'required' => false,
+                'attr' => ['class' => 'form-control'],
+                'constraints' => [
+                    new File([
+                        'maxSize' => '1024k',
+                        'mimeTypes' => [
+                            'image/jpeg',
+                            'image/png',
+                            'image/jpg',
+                            'image/webp',
+                            'image/gif',
+                        ],
+                        'mimeTypesMessage' => 'Veuillez choisir une image valide (JPEG, PNG, JPG, WEBP, GIF).'
+                    ])
+                ],
             ])
         ;
     }
