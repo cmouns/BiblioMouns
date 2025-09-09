@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Controller;
-
 use App\Entity\Book;
 use App\Entity\User;
 use App\Form\BookType;
@@ -10,6 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
  
@@ -72,22 +72,39 @@ final class BookController extends AbstractController
     }
 
     #[Route('/editor/book/{id}/edit', name: 'app_book_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Book $book, EntityManagerInterface $entityManager): Response
-    {
-        $form = $this->createForm(BookType::class, $book);
-        $form->handleRequest($request);
+public function edit(Request $request, Book $book, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
+{
+    $form = $this->createForm(BookType::class, $book);
+    $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+    if ($form->isSubmitted() && $form->isValid()) {
+        $image = $form->get('image')->getData();
 
-            return $this->redirectToRoute('app_book_index', [], Response::HTTP_SEE_OTHER);
+        if ($image) {
+            $originalName = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
+            $safeImageName = $slugger->slug($originalName);
+            $newFileImageName = $safeImageName.'-'.uniqid().'.'.$image->guessExtension();
+
+            try {
+                $image->move($this->getParameter('image_directory'), $newFileImageName);
+            } catch (FileException $exception) {
+                $this->addFlash('danger', 'Erreur lors de l\'upload de l\'image');
+            }
+
+            $book->setImage($newFileImageName);
         }
+
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_book_index', [], Response::HTTP_SEE_OTHER);
+    }
 
         return $this->render('book/edit.html.twig', [
             'book' => $book,
             'form' => $form,
         ]);
-    }
+}
+
 
     #[Route('/editor/book/{id}/delete', name: 'app_book_delete', methods: ['POST'])]
     public function delete(Request $request, Book $book, EntityManagerInterface $entityManager): Response
@@ -120,15 +137,17 @@ final class BookController extends AbstractController
         }
 
         $em->flush();
+         $this->addFlash('success', 'Livre ajouté aux favoris avec succès.');
 
-        return $this->redirectToRoute('app_show_book_favorite');
+
+        return $this->redirectToRoute('app_home');
     }
 
      #[Route('/show/favorites', name: 'app_show_book_favorite')]
-    public function showFavorite(EntityManagerInterface $em): Response
+    public function showFavorite(BookRepository $book): Response
     {
         $user = $this->getUser();
-
+        
         if (!$user instanceof \App\Entity\User) {
             throw $this->createAccessDeniedException();
         }
@@ -141,8 +160,10 @@ final class BookController extends AbstractController
 
         return $this->render('book/favorites.html.twig', [
             'favorites' => $favorites,
+            'books' => $book,
         ]);
     }
+    
 
 
 }

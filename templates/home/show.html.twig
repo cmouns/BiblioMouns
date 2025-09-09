@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ books.name }}{% endblock %}
+
+{% block body %}
+<a href="/"><button type="button" class="btn btn-secondary btn-lg mt-2 ms-2">Retour</button></a>
+<div class="container my-5">
+    <div class="row">
+        <!-- Image produit -->
+        <div class="col-md-6">
+            <img src="{{ asset('uploads/images/' ~ books.image) }}" 
+                 alt="{{ books.name }}" 
+                 class="img-fluid rounded shadow-sm"
+                 style="object-fit: contain; max-height: 500px; width: 100%;">
+        </div>
+        <!-- Infos produit -->
+        <div class="col-md-6 d-flex flex-column">
+            <h1 class="mb-4">{{ books.name }}</h1>
+            <p class="text-muted" style="white-space: pre-line;">{{ books.synopsis }}</p>
+            
+            <h3>{{books.price}}€</h3>
+        </div>
+    </div>
+    <h2 class="mt-5">Dernier produits ajoutés</h2>
+    <div class="row">
+
+        {% for lastBook in lastBooks %}                
+        
+            {% if lastBook != books %}
+                {% set subCategory = lastBook.getSubCategory().first() %}
+                    {% if subCategory %}
+                        <div class="col-md-3 mb-4 d-flex">
+                            <div class="card h-100 w-100 d-flex flex-column">
+                                <div class="card-img-top ratio ratio-4x3 bg-light rounded-top" style="overflow: hidden;">
+                                    <img 
+                                    src="{{ asset('uploads/images/' ~ lastBook.image) }}" 
+                                    alt="{{ lastBook.name }}" 
+                                    class="img-fluid h-100 w-100"
+                                    style="object-fit: contain; background: #f8f9fa;">
+                                </div>
+                                <div class="card-body d-flex flex-column">
+                                    <a href="{{ path('app_home_book_show', {
+                                        'id': lastBook.id,
+                                        'slug': lastBook.slug
+                                    }) }}">
+                                        {{ lastBook.name }}
+                                    </a>
+                                    <p class="card-text flex-grow-1">
+                                    {{ lastBook.synopsis|slice(0, 60) }}{{ lastBook.synopsis|length > 60 ? '...' }}
+                                    </p>
+                                    
+                                    <h3>{{lastBook.price}}€</h3>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+            {% endif %}
+
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

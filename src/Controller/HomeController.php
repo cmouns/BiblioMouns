@@ -39,4 +39,15 @@ final class HomeController extends AbstractController
         'categories'=>$categoryRepository->findAll(), //la liste de toutes les categories via la repo
         ]);
     }
+
+    #[Route('/book/{id}/{slug}', name: 'app_home_book_show', methods: ['GET'])]
+   public function showBooks(Book $book, BookRepository $bookRepository, CategoryRepository $categoryRepo): Response
+    {
+        $lastBooksAdd = $bookRepository->findBy([], ['id' => 'DESC'], 5);
+        return $this->render('home/show.html.twig', [
+            'books' => $book,
+            'lastBooks' => $lastBooksAdd,
+            'subCategory' => $book->getSubCategory()->first(),
+        ]);
+    }
 }

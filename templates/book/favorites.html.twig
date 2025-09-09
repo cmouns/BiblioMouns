@@ -3,9 +3,11 @@
 {% block title %}Book index{% endblock %}
 
 {% block body %}
+<div class="container d-flex  gap-4">
+    <a href="/"><button type="button" class="mt-2 ms-2 mb-4">RETOUR</button></a>
     {% for favorite in favorites %}
         <div class="card" style="width: 18rem;">
-            <img src="..." class="card-img-top" alt="...">
+            <img src="{{ asset('uploads/images/' ~ favorite.getImage()) }}" class="card-img-top" alt="{{ favorite.name }}">
             <div class="card-body">
                 <h5 class="card-title">{{ favorite.name }}</h5>
                 <p class="card-text">{{ favorite.synopsis }}</p>
@@ -16,4 +18,6 @@
             </div>
         </div>
     {% endfor %}
+</div>
+
 {% endblock %}

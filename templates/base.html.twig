@@ -12,6 +12,22 @@
         {% block javascripts %}
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
+        <style> 
+        .imglogo {
+            height: 100px;
+            width: 150px;
+            border-radius: 50%;
+        }
+        .test{
+            width: 80vh;
+            max-width: 100vh;
+            height: auto;
+        }
+        .containerLogin {
+            display: inline-flex;
+            justify-content: flex-end;
+        }
+        </style>
     </head>
     <body>
         {% block nav %}
